@@ -9,19 +9,44 @@ export class News extends Component {
         console.log("constructor news");
         this.state={
           articles: this.articles,
+          page:1,
+          totalResults:0,
             loading:false
         }
     }
     async componentDidMount(){
       console.log("cdm");
-        let url="https://newsapi.org/v2/top-headlines?country=in&apiKey=b35360b5b776464999fe0453b3121989";
+        let url="https://newsapi.org/v2/top-headlines?country=us&apiKey=b35360b5b776464999fe0453b3121989";
         let data=await fetch(url);
         let parsedData=await data.json();
         console.log(parsedData);
-        this.setState({articles : parsedData.articles});
+        this.setState({articles : parsedData.articles, totalResults:parsedData.totalResults });
+    }
+
+    handleNext= async ()=>{
+      if(this.state.page> Math.ceil(this.state.totalResults/20)){}
+      else{
+      let url=`https://newsapi.org/v2/top-headlines?country=us&apiKey=b35360b5b776464999fe0453b3121989&page=${this.state.page+1}`;
+      let data=await fetch(url);
+      let parsedData=await data.json();
+      
+      this.setState({articles : parsedData.articles});
+    this.setState({page:this.state.page+1})
+  }
+    }
+
+    handlePrevious=async ()=>{
+      let url=`https://newsapi.org/v2/top-headlines?country=us&apiKey=b35360b5b776464999fe0453b3121989&page=${this.state.page-1}`;
+      let data=await fetch(url);
+      let parsedData=await data.json();
+
+      this.setState({articles : parsedData.articles});
+      this.setState({page:this.state.page-1})
+
     }
   render() {
     return (
+      <>
       <div className='container my-3'>
         <h2>NewsMonkey - Top HeadLines</h2>
         <div className="row">
@@ -32,6 +57,12 @@ export class News extends Component {
        
         </div>
       </div>
+
+      <div className='container d-flex justify-content-between'>
+        <button type="button" disabled={this.state.page<=1} onClick={this.handlePrevious} className="btn btn-dark">&larr; Previous</button>
+        <button type="button" onClick={this.handleNext} className ="btn btn-dark">Next &rarr;</button>
+      </div>
+      </>
     )
   }
 }
