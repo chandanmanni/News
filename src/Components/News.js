@@ -1,7 +1,21 @@
 import React, { Component } from 'react'
 import NewsItem from './NewsItem'
+import PropTypes from 'prop-types'
 
 export class News extends Component {
+static defaultProps={
+country:'in',
+pagesize:8,
+category: 'general'
+}
+
+static propTypes={
+  country:PropTypes.string,
+  pagesize:PropTypes.number,
+  category: PropTypes.string
+}
+
+
   articles=[];
   
     constructor(){
@@ -16,7 +30,7 @@ export class News extends Component {
     }
     async componentDidMount(){
       console.log("cdm");
-        let url="https://newsapi.org/v2/top-headlines?country=us&apiKey=b35360b5b776464999fe0453b3121989";
+        let url=`https://newsapi.org/v2/top-headlines?country=in&category=${this.props.category}&apiKey=b35360b5b776464999fe0453b3121989&pageSize=20`;
         let data=await fetch(url);
         let parsedData=await data.json();
         console.log(parsedData);
@@ -26,7 +40,7 @@ export class News extends Component {
     handleNext= async ()=>{
       if(this.state.page> Math.ceil(this.state.totalResults/20)){}
       else{
-      let url=`https://newsapi.org/v2/top-headlines?country=us&apiKey=b35360b5b776464999fe0453b3121989&page=${this.state.page+1}`;
+      let url=`https://newsapi.org/v2/top-headlines?country=in&category=${this.props.category}&apiKey=b35360b5b776464999fe0453b3121989&page=${this.state.page+1}&pageSize=20`;
       let data=await fetch(url);
       let parsedData=await data.json();
       
@@ -36,7 +50,7 @@ export class News extends Component {
     }
 
     handlePrevious=async ()=>{
-      let url=`https://newsapi.org/v2/top-headlines?country=us&apiKey=b35360b5b776464999fe0453b3121989&page=${this.state.page-1}`;
+      let url=`https://newsapi.org/v2/top-headlines?country=in&category=${this.props.category}&apiKey=b35360b5b776464999fe0453b3121989&page=${this.state.page-1}&pageSize=20`;
       let data=await fetch(url);
       let parsedData=await data.json();
 
@@ -60,7 +74,7 @@ export class News extends Component {
 
       <div className='container d-flex justify-content-between'>
         <button type="button" disabled={this.state.page<=1} onClick={this.handlePrevious} className="btn btn-dark">&larr; Previous</button>
-        <button type="button" onClick={this.handleNext} className ="btn btn-dark">Next &rarr;</button>
+        <button type="button" disabled={this.state.page +1> Math.ceil(this.state.totalResults/20)} onClick={this.handleNext} className ="btn btn-dark">Next &rarr;</button>
       </div>
       </>
     )
