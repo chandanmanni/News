@@ -69,8 +69,8 @@ useEffect(()=>{updateNews()},[])
     return (
       <>
 
-      <div className='container my-3'>
-        <h2>NewsMonkey - Top HeadLines</h2>
+      <div className='container my-3' >
+        <h2 style={{margin: "70px 0px 20px 330px"}}>NewsMonkey - Top HeadLines</h2>
         <div className="row">
             {articles.map((element)=>{
                 return <div className="col-md-4" key={element.title?element.title:""}>
