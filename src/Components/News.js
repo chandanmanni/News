@@ -20,13 +20,21 @@ useEffect(()=>{updateNews()},[])
       props.setProgress(10)
       console.log("cdm");
       props.setProgress(30)
-        let url=`https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&page=${page}&apiKey=b35360b5b776464999fe0453b3121989&pageSize=20`;
-        let data=await fetch(url);
+        // let url=`https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&page=${page}&apiKey=b35360b5b776464999fe0453b3121989&pageSize=20`;
+        let url=`https://news-api14.p.rapidapi.com/v2/trendings?topic=${props.category}&language=en&country=in&page=${page}&limit=20`;
+        const options = {
+          method: 'GET',
+          headers: {
+            'x-rapidapi-key': '3cede79d37msh6c08059bc73cf2ep1d9953jsn68fabd9bb822',
+            'x-rapidapi-host': 'news-api14.p.rapidapi.com'
+          }
+        };
+        let data=await fetch(url, options);
         let parsedData=await data.json();
       props.setProgress(70)
         console.log(parsedData);
-        setarticles(parsedData.articles);
-        settotalResults(parsedData.totalResults);
+        setarticles(parsedData.data);
+        settotalResults(parsedData.totalHits);
         
       props.setProgress(100)
     }
@@ -57,12 +65,20 @@ useEffect(()=>{updateNews()},[])
       props.setProgress(10)
       setpage(page+1);
       props.setProgress(30)
-      const url = `https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&apikey=b35360b5b776464999fe0453b3121989&page=${page+1}&pageSize=20`;
-      let data = await fetch(url);
+      //const url = `https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&apikey=b35360b5b776464999fe0453b3121989&page=${page+1}&pageSize=20`;
+      const url = `https://news-api14.p.rapidapi.com/v2/trendings?topic=${props.category}&language=en&country=in&page=${page+1}&limit=20`;
+      const options = {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-key': '3cede79d37msh6c08059bc73cf2ep1d9953jsn68fabd9bb822',
+          'x-rapidapi-host': 'news-api14.p.rapidapi.com'
+        }
+      };
+      let data = await fetch(url,options);
       let parsedData = await data.json()
       props.setProgress(70)
-      setarticles(articles.concat(parsedData.articles))
-      settotalResults(parsedData.totalResults);
+      setarticles(articles.concat(parsedData.data))
+      settotalResults(parsedData.totalHits);
       
       props.setProgress(100)
   };
@@ -74,7 +90,7 @@ useEffect(()=>{updateNews()},[])
         <div className="row">
             {articles.map((element)=>{
                 return <div className="col-md-4" key={element.title?element.title:""}>
-        <NewsItem title={element.title?element.title.slice(0,45):""} description={element.description?element.description.slice(0,88):""} imageUrl={element.urlToImage?element.urlToImage:""} newsUrl={element.url?element.url:""} author={element.author} publishedAt={new Date(element.publishedAt).toDateString()}/>
+        <NewsItem title={element.title?element.title.slice(0,45):""} description={element.description?element.description.slice(0,88):""} imageUrl={element.thumbnail?element.thumbnail:""} newsUrl={element.url?element.url:""} author={element.author} publishedAt={new Date(element.publishedAt).toDateString()}/>
         </div>})}
        
         </div>
@@ -99,7 +115,7 @@ useEffect(()=>{updateNews()},[])
 News.defaultProps={
   country:'in',
   pagesize:8,
-  category: 'general'
+  category: 'General'
   }
   
 News.propTypes={
